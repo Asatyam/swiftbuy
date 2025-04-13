@@ -1,0 +1,20 @@
+# Java
+*.class
+*.jar
+*.war
+*.ear
+target/
+bin/
+*.log
+
+# React (node modules)
+node_modules/
+.env
+build/
+
+# IDE Files (Optional)
+.idea/
+.vscode/
+
+# Other
+.DS_Store
