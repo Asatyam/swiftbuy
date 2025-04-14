@@ -1,0 +1,85 @@
+version: '3'
+services:
+  user-service:
+    build:
+      context: ./user-service
+    ports:
+      - "8081:8080"
+    depends_on:
+      - spring-user-db
+
+  order-service:
+    build:
+      context: ./order-service
+    ports:
+      - "8083:8080"
+    depends_on:
+      - spring-order-db
+
+  product-service:
+    build:
+      context: ./product-service
+    ports:
+      - "8084:8080"
+    depends_on:
+      - spring-product-db
+
+  cart-service:
+    build:
+      context: ./cart-service
+    ports:
+      - "8082:8080"
+    depends_on:
+      - spring-cart-db
+
+
+  spring-user-db:
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: spring_ecommerce_user
+      POSTGRES_PASSWORD: spring_ecommerce
+      POSTGRES_DB: spring_user_db
+    volumes:
+      - spring_user_db_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  spring-order-db:
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: spring_ecommerce_user
+      POSTGRES_PASSWORD: spring_ecommerce
+      POSTGRES_DB: spring_order_db
+    volumes:
+      - spring_order_db_data:/var/lib/postgresql/data
+    ports:
+      - "5433:5432"
+
+  spring-product-db:
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: spring_ecommerce_user
+      POSTGRES_PASSWORD: spring_ecommerce
+      POSTGRES_DB: spring_product_db
+    volumes:
+      - spring_product_db_data:/var/lib/postgresql/data
+    ports:
+      - "5434:5432"
+
+  spring-cart-db:
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: spring_ecommerce_user
+      POSTGRES_PASSWORD: spring_ecommerce
+      POSTGRES_DB: spring_cart_db
+    volumes:
+      - spring_cart_db_data:/var/lib/postgresql/data
+    ports:
+      - "5435:5432"
+
+
+volumes:
+  spring_user_db_data:
+  spring_order_db_data:
+  spring_product_db_data:
+  spring_cart_db_data:
