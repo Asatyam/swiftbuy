@@ -4,7 +4,7 @@ services:
     build:
       context: ./user-service
     ports:
-      - "8081:8080"
+      - "8081:8081"
     depends_on:
       - spring-user-db
 
@@ -12,7 +12,7 @@ services:
     build:
       context: ./order-service
     ports:
-      - "8083:8080"
+      - "8083:8083"
     depends_on:
       - spring-order-db
 
@@ -20,7 +20,7 @@ services:
     build:
       context: ./product-service
     ports:
-      - "8084:8080"
+      - "8084:8084"
     depends_on:
       - spring-product-db
 
@@ -28,7 +28,7 @@ services:
     build:
       context: ./cart-service
     ports:
-      - "8082:8080"
+      - "8082:8082"
     depends_on:
       - spring-cart-db
 
@@ -42,7 +42,7 @@ services:
     volumes:
       - spring_user_db_data:/var/lib/postgresql/data
     ports:
-      - "5432:5432"
+      - "5431:5432"
 
   spring-order-db:
     image: postgres:latest
