@@ -2,6 +2,7 @@ package com.satyamagrawal.swiftbuy.userservice.service;
 
 import com.satyamagrawal.swiftbuy.userservice.dto.UserRegistrationRequest;
 import com.satyamagrawal.swiftbuy.userservice.entity.User;
+import com.satyamagrawal.swiftbuy.userservice.exception.DuplicateResourceException;
 import com.satyamagrawal.swiftbuy.userservice.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -74,8 +75,8 @@ public class UserServiceRegistrationTest {
 
         try {
             userService.registerUser(request);
-        } catch (IllegalArgumentException e) {
-            assertEquals("Email already exists", e.getMessage());
+        } catch (DuplicateResourceException e) {
+            assertEquals("Email " + request.email() + " address already in use", e.getMessage());
         }
     }
     @Test
@@ -85,8 +86,8 @@ public class UserServiceRegistrationTest {
 
         try {
             userService.registerUser(request);
-        } catch (IllegalArgumentException e) {
-            assertEquals("Username already exists", e.getMessage());
+        } catch (DuplicateResourceException e) {
+            assertEquals("Username " + request.username() + " already in use", e.getMessage());
         }
     }
 }

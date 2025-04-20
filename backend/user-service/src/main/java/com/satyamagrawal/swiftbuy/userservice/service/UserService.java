@@ -2,6 +2,7 @@ package com.satyamagrawal.swiftbuy.userservice.service;
 
 import com.satyamagrawal.swiftbuy.userservice.dto.UserRegistrationRequest;
 import com.satyamagrawal.swiftbuy.userservice.entity.User;
+import com.satyamagrawal.swiftbuy.userservice.exception.DuplicateResourceException;
 import com.satyamagrawal.swiftbuy.userservice.repository.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -17,10 +18,10 @@ public class UserService {
 
     public User registerUser(UserRegistrationRequest userRegistrationRequest) {
         if (userRepository.existsByEmail(userRegistrationRequest.email())) {
-            throw new IllegalArgumentException("Email already exists");
+            throw new DuplicateResourceException("Email " + userRegistrationRequest.email() +" address already in use");
         }
         if (userRepository.existsByUsername(userRegistrationRequest.username())) {
-            throw new IllegalArgumentException("Username already exists");
+            throw new DuplicateResourceException("Username " + userRegistrationRequest.username() +" already in use");
         }
 
         User user = new User();
