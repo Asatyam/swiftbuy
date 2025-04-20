@@ -3,6 +3,7 @@ package com.satyamagrawal.swiftbuy.userservice.service;
 import com.satyamagrawal.swiftbuy.userservice.dto.UserRegistrationRequest;
 import com.satyamagrawal.swiftbuy.userservice.entity.User;
 import com.satyamagrawal.swiftbuy.userservice.repository.UserRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -18,7 +19,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class UserServiceTest {
+public class UserServiceRegistrationTest {
     @Mock
     private UserRepository userRepository;
 
@@ -27,18 +28,22 @@ public class UserServiceTest {
 
     @InjectMocks
     private UserService userService;
+    private UserRegistrationRequest request;
 
-    @Test
-    void shouldRegisterUserSuccessfully() {
-        // Input
-        UserRegistrationRequest request = new UserRegistrationRequest(
+
+    @BeforeEach
+    void setUp() {
+         request = new UserRegistrationRequest(
                 "testuser",
                 "Test",
                 "User",
                 "testuser123@mail.com",
                 "password123"
         );
+    }
 
+    @Test
+    void shouldRegisterUserSuccessfully() {
 
         when(userRepository.existsByEmail(request.email())).thenReturn(false);
         when(userRepository.existsByUsername(request.username())).thenReturn(false);
@@ -61,5 +66,27 @@ public class UserServiceTest {
         assertEquals(mockedUser.getEmail(), result.getEmail(), "Emails should match");
         assertEquals(mockedUser.getPassword(), result.getPassword(), "Passwords should match");
 
+    }
+
+    @Test
+    void shouldThrowExceptionWhenEmailExists() {
+        when(userRepository.existsByEmail(request.email())).thenReturn(true);
+
+        try {
+            userService.registerUser(request);
+        } catch (IllegalArgumentException e) {
+            assertEquals("Email already exists", e.getMessage());
+        }
+    }
+    @Test
+    void shouldThrowExceptionWhenUsernameExists() {
+        when(userRepository.existsByEmail(request.email())).thenReturn(false);
+        when(userRepository.existsByUsername(request.username())).thenReturn(true);
+
+        try {
+            userService.registerUser(request);
+        } catch (IllegalArgumentException e) {
+            assertEquals("Username already exists", e.getMessage());
+        }
     }
 }
