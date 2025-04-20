@@ -1,12 +1,12 @@
-package com.satyamagrawal.swiftbuy.userservice.controller;
+package com.satyamagrawal.swiftbuy.userservice.controllers;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.satyamagrawal.swiftbuy.userservice.dto.UserRegistrationRequest;
+import com.satyamagrawal.swiftbuy.userservice.dto.UserRegistrationResponse;
 import com.satyamagrawal.swiftbuy.userservice.entity.User;
 import com.satyamagrawal.swiftbuy.userservice.service.UserService;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -35,8 +35,10 @@ public class UserControllerTest {
     @BeforeEach
     void setup() {
         mockMvc = MockMvcBuilders.standaloneSetup(userController).build();
+        mapper = new ObjectMapper();
     }
 
+    @Test
     public void shouldRegisterUserSuccessfully() throws Exception {
         UserRegistrationRequest request = new UserRegistrationRequest(
                 "testuser",
@@ -46,27 +48,26 @@ public class UserControllerTest {
                 "password123"
         );
 
-        User user = new User();
-        user.setUsername(request.username());
-        user.setFirstName(request.firstName());
-        user.setLastName(request.lastName());
-        user.setEmail(request.email());
-        user.setPassword("encodedPassword");
-        user.setId(123L);
-        user.setCreatedAt(LocalDateTime.now());
-        user.setUpdatedAt(LocalDateTime.now());
-        when(userService.registerUser(request)).thenReturn(user);
+        UserRegistrationResponse response = new UserRegistrationResponse(
+                123L,
+                request.username(),
+                request.firstName(),
+                request.lastName(),
+                request.email(),
+                LocalDateTime.now()
+        );
+
+        when(userService.registerUser(request)).thenReturn(response);
 
         mockMvc.perform(post("/api/users/register")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(request)))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.id").value(user.getId()))
-                .andExpect(jsonPath("$.username").value(user.getUsername()))
-                .andExpect(jsonPath("$.firstName").value(user.getFirstName()))
-                .andExpect(jsonPath("$.lastName").value(user.getLastName()))
-                .andExpect(jsonPath("$.email").value(user.getPassword()))
-                .andExpect(jsonPath("$.email").value(user.getEmail()));
+                .andExpect(jsonPath("$.id").value(response.id()))
+                .andExpect(jsonPath("$.username").value(response.username()))
+                .andExpect(jsonPath("$.firstName").value(response.firstName()))
+                .andExpect(jsonPath("$.lastName").value(response.lastName()))
+                .andExpect(jsonPath("$.email").value(response.email()));
     }
 
 }

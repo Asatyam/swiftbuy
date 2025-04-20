@@ -1,6 +1,7 @@
 package com.satyamagrawal.swiftbuy.userservice.service;
 
 import com.satyamagrawal.swiftbuy.userservice.dto.UserRegistrationRequest;
+import com.satyamagrawal.swiftbuy.userservice.dto.UserRegistrationResponse;
 import com.satyamagrawal.swiftbuy.userservice.entity.User;
 import com.satyamagrawal.swiftbuy.userservice.exception.DuplicateResourceException;
 import com.satyamagrawal.swiftbuy.userservice.repository.UserRepository;
@@ -59,13 +60,12 @@ public class UserServiceRegistrationTest {
 
         when(userRepository.save(any(User.class))).thenReturn(mockedUser);
 
-        User result = userService.registerUser(request);
+        UserRegistrationResponse result = userService.registerUser(request);
         assertNotNull(result,"User should not be null");
-        assertEquals(mockedUser.getUsername(), result.getUsername(), "Usernames should match");
-        assertEquals(mockedUser.getFirstName(), result.getFirstName(), "First names should match");
-        assertEquals(mockedUser.getLastName(), result.getLastName(), "Last names should match");
-        assertEquals(mockedUser.getEmail(), result.getEmail(), "Emails should match");
-        assertEquals(mockedUser.getPassword(), result.getPassword(), "Passwords should match");
+        assertEquals(mockedUser.getUsername(), result.username(), "Usernames should match");
+        assertEquals(mockedUser.getFirstName(), result.firstName(), "First names should match");
+        assertEquals(mockedUser.getLastName(), result.lastName(), "Last names should match");
+        assertEquals(mockedUser.getEmail(), result.email(), "Emails should match");
 
     }
 
