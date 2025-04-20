@@ -1,5 +1,6 @@
 package com.satyamagrawal.swiftbuy.userservice.controllers;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.satyamagrawal.swiftbuy.userservice.dto.UserRegistrationRequest;
 import com.satyamagrawal.swiftbuy.userservice.dto.UserRegistrationResponse;
@@ -17,6 +18,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.time.LocalDateTime;
 
+import static org.mockito.ArgumentMatchers.contains;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -69,5 +71,69 @@ public class UserControllerTest {
                 .andExpect(jsonPath("$.lastName").value(response.lastName()))
                 .andExpect(jsonPath("$.email").value(response.email()));
     }
+    @Test
+    void shouldFailForEmptyUsername() throws Exception {
+
+        UserRegistrationRequest request = new UserRegistrationRequest(
+                "",
+                "Test",
+                "User",
+                "testuser123@mail.com",
+                "password123"
+        );
+
+        mockMvc.perform(post("/api/users/register")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(mapper.writeValueAsString(request)))
+                .andExpect(status().isBadRequest());
+    }
+    @Test
+    void shouldFailForEmptyEmail() throws Exception {
+
+        UserRegistrationRequest request = new UserRegistrationRequest(
+                "testuser",
+                "Test",
+                "User",
+                "",
+                "password123"
+        );
+
+        mockMvc.perform(post("/api/users/register")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(mapper.writeValueAsString(request)))
+                .andExpect(status().isBadRequest());
+    }
+    @Test
+    void shouldFailForInvalidEmail() throws Exception {
+
+            UserRegistrationRequest request = new UserRegistrationRequest(
+                    "testuser",
+                    "Test",
+                    "User",
+                    "testuser123-invalid-mail-com",
+                    "password123"
+            );
+
+            mockMvc.perform(post("/api/users/register")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(mapper.writeValueAsString(request)))
+                    .andExpect(status().isBadRequest());
+        }
+        @Test
+        void shouldFailForMultipleInvalids() throws Exception {
+
+            UserRegistrationRequest request = new UserRegistrationRequest(
+                    "",
+                    "Test",
+                    "User",
+                    "testuser123-invalid-mail-com",
+                    "password123"
+            );
+
+            mockMvc.perform(post("/api/users/register")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(mapper.writeValueAsString(request)))
+                    .andExpect(status().isBadRequest());
+        }
 
 }

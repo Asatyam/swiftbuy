@@ -5,8 +5,12 @@ import com.satyamagrawal.swiftbuy.userservice.dto.UserRegistrationResponse;
 import com.satyamagrawal.swiftbuy.userservice.entity.User;
 import com.satyamagrawal.swiftbuy.userservice.service.UserService;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Email;
+import org.apache.coyote.BadRequestException;
+import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,7 +28,7 @@ public class UserController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<Object> registerUser(@RequestBody @Valid UserRegistrationRequest request) throws URISyntaxException {
+    public ResponseEntity<Object> registerUser(@RequestBody @Valid UserRegistrationRequest request) throws URISyntaxException, BadRequestException {
 
         UserRegistrationResponse userRegistrationResponse = userService.registerUser(request);
         return ResponseEntity.created(new URI("/api/users/" + userRegistrationResponse.id())).body(userRegistrationResponse);
